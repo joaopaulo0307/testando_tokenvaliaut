@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "491467723154",
+    "project_id": "soyamoroso-8613c",
+    "storage_bucket": "soyamoroso-8613c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491467723154:android:f3e0f4e413e5f21650314b",
+        "android_client_info": {
+          "package_name": "com.example.testando_tokenvaliaut"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxXbUeNU8kA_BKPfYm7_YaK58aN30J3B4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
