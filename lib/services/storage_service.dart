@@ -1,4 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/user_model.dart';
+import 'dart:convert'; // Importar para usar json.encode e json.decode
 
 class StorageService {
   static const String _tokenKey = 'auth_token';
@@ -16,14 +18,25 @@ class StorageService {
 
   Future<void> saveUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_userKey, user.toJsonString());
+    // Converter o User para Map e depois para JSON string
+    final userJson = user.toJson();
+    final userString = json.encode(userJson);
+    await prefs.setString(_userKey, userString);
   }
 
   Future<User?> getUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userString = prefs.getString(_userKey);
+    
     if (userString != null) {
-      return User.fromJsonString(userString);
+      try {
+        // Converter JSON string para Map e depois para User
+        final userMap = json.decode(userString) as Map<String, dynamic>;
+        return User.fromJson(userMap);
+      } catch (e) {
+        print('Erro ao decodificar usuário: $e');
+        return null;
+      }
     }
     return null;
   }
@@ -32,17 +45,5 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
     await prefs.remove(_userKey);
-  }
-}
-
-// Adicione estes métodos na classe User
-extension UserSerialization on User {
-  String toJsonString() {
-    return '{"id":"$id","name":"$name","email":"$email","role":"$role"}';
-  }
-
-  static User fromJsonString(String jsonString) {
-    final json = Map<String, dynamic>.from(json.decode(jsonString));
-    return User.fromJson(json);
   }
 }

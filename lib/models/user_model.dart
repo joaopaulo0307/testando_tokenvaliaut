@@ -13,11 +13,21 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      role: json['role'] ?? 'USER',
+      id: json['id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      email: json['email']?.toString() ?? '',
+      role: json['role']?.toString() ?? 'USER',
     );
+  }
+
+  // MÉTODO toJson() ADICIONADO - ESSENCIAL PARA O StorageService
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'role': role,
+    };
   }
 
   bool get isAdmin => role == 'ADMIN';
@@ -35,7 +45,7 @@ class AuthResponse {
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
     return AuthResponse(
-      token: json['token'] ?? '',
+      token: json['token']?.toString() ?? '',
       user: User.fromJson(json['user'] ?? {}),
     );
   }
