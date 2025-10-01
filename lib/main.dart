@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
-import 'services/api_service.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   runApp(const MyApp());
 }
 
@@ -11,48 +19,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter API REST Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final ApiService api = ApiService();
-  String resultado = "Carregando...";
-
-  @override
-  void initState() {
-    super.initState();
-    carregarDados();
-  }
-
-  Future<void> carregarDados() async {
-    try {
-      final data = await api.getData("endpoint"); // Substitua pelo endpoint real
-      setState(() {
-        resultado = data.toString();
-      });
-    } catch (e) {
-      setState(() {
-        resultado = "Erro: $e";
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Integração API REST")),
-      body: Center(child: Text(resultado)),
+      title: 'Sistema de Autenticação',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const SplashScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
