@@ -29,16 +29,24 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text,
       );
 
-      // Navegar para a tela correta baseada no role
-      if (authResponse.user.isAdmin) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminHome(user: authResponse.user)),
-        );
+      // ✅ CORREÇÃO: Verificar se user não é null antes de acessar
+      if (authResponse.user != null) {
+        // Navegar para a tela correta baseada no role
+        if (authResponse.user!.isAdmin) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AdminHome(user: authResponse.user!)),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UserHome(user: authResponse.user!)),
+          );
+        }
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserHome(user: authResponse.user)),
+        // Se user for null, mostrar erro
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: Não foi possível obter dados do usuário')),
         );
       }
     } catch (e) {
@@ -50,10 +58,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // ✅ CORREÇÃO: Método para preencher credenciais reais
+  void _fillCredentials(String email, String password) {
+    _emailController.text = email;
+    _passwordController.text = password;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: Text('Login')), // ✅ REMOVIDO "MODO DESENVOLVIMENTO"
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -61,11 +75,13 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Campo de Email
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'E-mail',
                   border: OutlineInputBorder(),
+                  // ✅ REMOVIDO hintText de desenvolvimento
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
@@ -79,11 +95,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               SizedBox(height: 16),
+              
+              // Campo de Senha
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Senha',
                   border: OutlineInputBorder(),
+                  // ✅ REMOVIDO hintText de desenvolvimento
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -97,6 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               SizedBox(height: 24),
+              
+              // Botão de Login
               _isLoading
                   ? CircularProgressIndicator()
                   : ElevatedButton(
@@ -106,6 +127,33 @@ class _LoginScreenState extends State<LoginScreen> {
                         minimumSize: Size(double.infinity, 50),
                       ),
                     ),
+              
+              SizedBox(height: 20),
+              Divider(),
+              SizedBox(height: 10),
+              
+              // ✅ CORREÇÃO: Botões para credenciais reais
+              Text(
+                'Credenciais de Teste:',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              ),
+              SizedBox(height: 10),
+              
+              OutlinedButton(
+                onPressed: () => _fillCredentials('teste1@email.com', '123456'),
+                child: Text('teste1@email.com / 123456'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.blue,
+                  side: BorderSide(color: Colors.blue),
+                ),
+              ),
+              
+              SizedBox(height: 10),
+              Text(
+                'Use o botão acima para preencher as credenciais de teste',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),

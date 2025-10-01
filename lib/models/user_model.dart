@@ -20,7 +20,6 @@ class User {
     );
   }
 
-  // MÉTODO toJson() ADICIONADO - ESSENCIAL PARA O StorageService
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -36,17 +35,19 @@ class User {
 
 class AuthResponse {
   final String token;
-  final User user;
+  final User? user;
 
   AuthResponse({
     required this.token,
-    required this.user,
+    this.user,
   });
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) {
     return AuthResponse(
+      // CORREÇÃO: Use o operador de coalescência nula corretamente
       token: json['token']?.toString() ?? '',
-      user: User.fromJson(json['user'] ?? {}),
+      // A resposta do login não tem "user", então deixamos como null
+      user: null,
     );
   }
 }
